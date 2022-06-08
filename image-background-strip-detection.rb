@@ -3,7 +3,7 @@ require 'bundler/setup'
 image_file = './test/67417700_p0_30p.jpg'
 
 def full_scan(image_file)
-  f = open("|convert #{image_file} txt:", 'r')
+  f = convert(image_file)
   pp image_color_info_2array(f)
 end
 
@@ -13,6 +13,10 @@ def image_color_info_2array(string)
     coord, rgb, color_code, color_name = pixel_info.delete(':()#').split("\s")
     color_code
   end
+end
+
+def convert(image_file)
+  open("|convert #{image_file} #{crop} txt:", 'r')
 end
 
 def image_geometry(image_file)
