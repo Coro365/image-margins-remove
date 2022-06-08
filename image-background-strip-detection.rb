@@ -15,4 +15,9 @@ def image_color_info_2array(string)
   end
 end
 
+def image_geometry(image_file)
+  w, h = `identify -format "%[width],%[height]" #{image_file}`.split(',').map(&:to_i)
+  {width: w, height: h}
+end
+
 full_scan(image_file)
