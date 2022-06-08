@@ -1,32 +1,33 @@
-require 'bundler/setup'
+module Imagemagick
+  def convert(image_file, crop=nil)
+    crop &&= "-crop #{crop[:width]}x#{crop[:hight]}+#{crop[:geo_x]}+#{crop[:geo_y]}"
+    open("|convert #{image_file} #{crop} txt:", 'r')
+  end
 
-image_file = './test/67417700_p0_30p.jpg'
+  def to_color_code
+    convert(self).extract_color_code
+  end
 
-def to_color_code(image_file)
-  result = convert(image_file)
-  image_color_info_2array(result)
-end
+  def extract_color_code
+    map.with_index do |pixel_info, index|
+      index.zero? && next
+      coord, rgb, color_code, color_name = pixel_info.delete(':()#').split("\s")
+      color_code
+    end
+  end
 
-def full_scan(image_file)
-  pp to_color_code(image_file)
-end
-
-def image_color_info_2array(string)
-  string.map.with_index do |pixel_info, index|
-    index.zero? && next
-    coord, rgb, color_code, color_name = pixel_info.delete(':()#').split("\s")
-    color_code
+  def image_geometry
+    w, h = `identify -format "%[width],%[height]" #{self}`.split(',').map(&:to_i)
+    {width: w, height: h}
   end
 end
 
-def convert(image_file, crop=nil)
-  crop &&= "-crop #{crop[:width]}x#{crop[:hight]}+#{crop[:geo_x]}+#{crop[:geo_y]}"
-  open("|convert #{image_file} #{crop} txt:", 'r')
+include Imagemagick
+
+def full_scan(image_file)
+  pp image_file.to_color_code
 end
 
-def image_geometry(image_file)
-  w, h = `identify -format "%[width],%[height]" #{image_file}`.split(',').map(&:to_i)
-  {width: w, height: h}
-end
+image_file = './test/67417700_p0_30p.jpg'
 
 full_scan(image_file)
