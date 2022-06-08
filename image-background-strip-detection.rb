@@ -2,9 +2,13 @@ require 'bundler/setup'
 
 image_file = './test/67417700_p0_30p.jpg'
 
+def to_color_code(image_file)
+  result = convert(image_file)
+  image_color_info_2array(result)
+end
+
 def full_scan(image_file)
-  f = convert(image_file)
-  pp image_color_info_2array(f)
+  pp to_color_code(image_file)
 end
 
 def image_color_info_2array(string)
@@ -15,7 +19,8 @@ def image_color_info_2array(string)
   end
 end
 
-def convert(image_file)
+def convert(image_file, crop=nil)
+  crop &&= "-crop #{crop[:width]}x#{crop[:hight]}+#{crop[:geo_x]}+#{crop[:geo_y]}"
   open("|convert #{image_file} #{crop} txt:", 'r')
 end
 
