@@ -17,7 +17,12 @@ class TestRubyMyCommon < Test::Unit::TestCase
                       8,0: (0,0,0)  #000000  black
                       9,0: (0,0,0)  #000000  black"
     color_code = '000000'
-    
+
     assert_equal(color_code, convert_result.split("\n").extract_color_code.first)
+  end
+
+  def test_image_geometry
+    image_file = './test/67417700_p0_30p.jpg'
+    assert_equal({:width=>614, :height=>341}, image_file.image_geometry)
   end
 end
