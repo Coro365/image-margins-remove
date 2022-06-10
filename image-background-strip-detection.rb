@@ -1,7 +1,8 @@
 module Imagemagick
   def convert(image_file, crop=nil)
     crop &&= "-crop #{crop[:width]}x#{crop[:height]}+#{crop[:geo_x]}+#{crop[:geo_y]}"
-    open("|convert #{image_file} #{crop} txt:", 'r')
+    cmd = ["|convert", image_file, crop, "txt:"].join("\s")
+    open(cmd, 'r')
   end
 
   def to_color_code
