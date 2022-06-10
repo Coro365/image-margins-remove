@@ -14,7 +14,7 @@ module Imagemagick
       index.zero? && next
       coord, rgb, color_code, color_name = pixel_info.delete(':()#').split("\s")
       color_code
-    end
+    end.compact
   end
 
   def image_geometry
