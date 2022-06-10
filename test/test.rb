@@ -33,4 +33,9 @@ class TestRubyMyCommon < Test::Unit::TestCase
     assert_equal(line_num, color_num_threshold_cheack(image_file, line_num))
     assert_false(color_num_threshold_cheack(image_file, 0))
   end
+
+  def test_horizon_strip_detect
+    image_file = './test/67417700_p0_30p.jpg'
+    assert_equal({:top=>43, :bottom=>297}, horizon_strip_detect(image_file))
+  end
 end
