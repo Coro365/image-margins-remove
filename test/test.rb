@@ -25,4 +25,12 @@ class TestRubyMyCommon < Test::Unit::TestCase
     image_file = './test/67417700_p0_30p.jpg'
     assert_equal({:width=>614, :height=>341}, image_file.image_geometry)
   end
+
+  def test_color_num_threshold_cheack
+    image_file = './test/67417700_p0_30p.jpg'
+    line_num = 100
+
+    assert_equal(line_num, color_num_threshold_cheack(image_file, line_num))
+    assert_false(color_num_threshold_cheack(image_file, 0))
+  end
 end
