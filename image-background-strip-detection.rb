@@ -1,6 +1,6 @@
 module Imagemagick
   def convert(image_file, crop=nil)
-    crop &&= "-crop #{crop[:width]}x#{crop[:hight]}+#{crop[:geo_x]}+#{crop[:geo_y]}"
+    crop &&= "-crop #{crop[:width]}x#{crop[:height]}+#{crop[:geo_x]}+#{crop[:geo_y]}"
     open("|convert #{image_file} #{crop} txt:", 'r')
   end
 
