@@ -44,4 +44,10 @@ class TestRubyMyCommon < Test::Unit::TestCase
     image_file = './test/Screenshot_20220611_145243_30p.png'
     assert_equal({:right=>43, :left=>427}, vertical_strip_detect(image_file))
   end
+
+  def test_background_detect
+    image_file = './test/67417700_p0_30p.jpg'
+    result = {:top=>43, :bottom=>297, :right=>2, :left=>612}
+    assert_equal(result, background_detect(image_file))
+  end
 end
