@@ -44,15 +44,11 @@ def strip_detect(image_file, axis)
 
   range_increase = (1..scan_bandwidth_num)
   border_1 = borderline(image_file, range_increase, axis)
-  if border_1
-    border_1 = border_1 + OFFSET_LINE_NUM
-  end
+  border_1 && border_1 += OFFSET_LINE_NUM
 
   range_decrease = (line_length - 1..line_length - scan_bandwidth_num)
   border_2 = borderline(image_file, range_decrease, axis)
-  if border_2
-    border_2 = border_2 - OFFSET_LINE_NUM
-  end
+  border_2 && border_2 -= OFFSET_LINE_NUM
 
   if axis == 'x'
     return {right: border_1, left: border_2}
