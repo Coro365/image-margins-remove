@@ -29,13 +29,19 @@ class TestRubyMyCommon < Test::Unit::TestCase
   def test_color_num_threshold_cheack
     image_file = './test/67417700_p0_30p.jpg'
     line_num = 100
+    axis = 'y'
 
-    assert_equal(line_num, color_num_threshold_cheack(image_file, line_num))
-    assert_false(color_num_threshold_cheack(image_file, 0))
+    assert_equal(line_num, color_num_threshold_cheack(image_file, line_num, axis))
+    assert_false(color_num_threshold_cheack(image_file, 0, axis))
   end
 
   def test_horizon_strip_detect
     image_file = './test/67417700_p0_30p.jpg'
     assert_equal({:top=>43, :bottom=>297}, horizon_strip_detect(image_file))
+  end
+
+  def test_vertical_strip_detect
+    image_file = './test/Screenshot_20220611_145243_30p.png'
+    assert_equal({:right=>43, :left=>427}, vertical_strip_detect(image_file))
   end
 end

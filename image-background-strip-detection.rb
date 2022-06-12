@@ -32,38 +32,59 @@ end
 def horizon_strip_detect(image_file)
   img_geo = image_file.image_geometry
   scan_bandwidth_num = (img_geo[:height] * SCAN_BANDWIDTH_PERCENT * 0.01).to_i
+  axis = 'y'
 
   range_top = (1..scan_bandwidth_num)
-  top = borderline(image_file, range_top)
+  top = borderline(image_file, range_top, axis)
 
   range_bottom = (img_geo[:height]-1..img_geo[:height]-scan_bandwidth_num)
-  bottom = borderline(image_file, range_bottom)
+  bottom = borderline(image_file, range_bottom, axis)
 
   {top: top + OFFSET_LINE_NUM, bottom: bottom - OFFSET_LINE_NUM}
 end
 
-def borderline(image_file, range)
+def vertical_strip_detect(image_file)
+  img_geo = image_file.image_geometry
+  scan_bandwidth_num = (img_geo[:width] * SCAN_BANDWIDTH_PERCENT * 0.01).to_i
+  axis = 'x'
+
+  range_right = (1..scan_bandwidth_num)
+  right = borderline(image_file, range_right, axis)
+
+  range_left = (img_geo[:width]-1..img_geo[:width]-scan_bandwidth_num)
+  left = borderline(image_file, range_left, axis)
+
+  {right: right + OFFSET_LINE_NUM, left: left - OFFSET_LINE_NUM}
+end
+
+def borderline(image_file, range, axis)
   # TODO: refactoring
   if range.first < range.last
     range.each do |line_num|
-      result = color_num_threshold_cheack(image_file, line_num)
+      result = color_num_threshold_cheack(image_file, line_num, axis)
       break result if result
     end
   else
     (range.first).downto(range.last) do |line_num|
-      result = color_num_threshold_cheack(image_file, line_num)
+      result = color_num_threshold_cheack(image_file, line_num, axis)
       break result if result
     end
   end
+  # TODO: error handling
 end
 
-def color_num_threshold_cheack(image_file, line_num)
-  color_num = line_colors(image_file, line_num).size
+def color_num_threshold_cheack(image_file, line_num, axis)
+  color_num = line_colors(image_file, line_num, axis).size
   COLOR_NUM_THRESHOLD < color_num ? line_num : false
 end
 
-def line_colors(image_file, line_num)
-  crop = {width: 0, height: 1, geo_x: 0, geo_y: line_num}
+def line_colors(image_file, line_num, axis)
+  if axis == 'x'
+    crop = {width: 1, height: 0, geo_x: line_num, geo_y: 0}
+  elsif axis == 'y'
+    crop = {width: 0, height: 1, geo_x: 0, geo_y: line_num}
+  end
+
   colors = image_file.to_color_code(crop)
 
   colors.sort.uniq.map do |color|
