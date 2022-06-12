@@ -44,31 +44,33 @@ def strip_detect(image_file, axis)
 
   range_increase = (1..scan_bandwidth_num)
   border_1 = borderline(image_file, range_increase, axis)
+  if border_1
+    border_1 = border_1 + OFFSET_LINE_NUM
+  end
 
   range_decrease = (line_length - 1..line_length - scan_bandwidth_num)
   border_2 = borderline(image_file, range_decrease, axis)
+  if border_2
+    border_2 = border_2 - OFFSET_LINE_NUM
+  end
 
   if axis == 'x'
-    return {right: border_1 + OFFSET_LINE_NUM, left: border_2 - OFFSET_LINE_NUM}
+    return {right: border_1, left: border_2}
   elsif axis == 'y'
-    return {top: border_1 + OFFSET_LINE_NUM, bottom: border_2 - OFFSET_LINE_NUM}
+    return {top: border_1, bottom: border_2}
   end
 end
 
 def borderline(image_file, range, axis)
-  # TODO: refactoring
-  if range.first < range.last
-    range.each do |line_num|
-      result = color_num_threshold_cheack(image_file, line_num, axis)
-      break result if result
-    end
-  else
-    (range.first).downto(range.last) do |line_num|
-      result = color_num_threshold_cheack(image_file, line_num, axis)
-      break result if result
-    end
+  r = range
+  lines = (r.first < r.last) ? r.to_a : (r.last..r.first).to_a.reverse
+  lines.each do |line_num|
+    result = color_num_threshold_cheack(image_file, line_num, axis)
+    return result if result
   end
-  # TODO: error handling
+
+  # not detect strip
+  return nil
 end
 
 def color_num_threshold_cheack(image_file, line_num, axis)
