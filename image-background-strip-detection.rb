@@ -58,15 +58,17 @@ def strip_detect(image_file, axis)
 end
 
 def borderline(image_file, range, axis)
-  r = range
-  lines = (r.first < r.last) ? r.to_a : (r.last..r.first).to_a.reverse
-  lines.each do |line_num|
+  to_a_process_oder(range).each do |line_num|
     result = color_num_threshold_cheack(image_file, line_num, axis)
     return result if result
   end
 
   # not detect strip
   return nil
+end
+
+def to_a_process_oder(range)
+  (range.first < range.last) ? range.to_a : (range.last..range.first).to_a.reverse
 end
 
 def color_num_threshold_cheack(image_file, line_num, axis)
