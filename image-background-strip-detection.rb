@@ -30,31 +30,29 @@ def full_scan(image_file)
 end
 
 def horizon_strip_detect(image_file)
-  img_geo = image_file.image_geometry
-  scan_bandwidth_num = (img_geo[:height] * SCAN_BANDWIDTH_PERCENT * 0.01).to_i
-  axis = 'y'
-
-  range_top = (1..scan_bandwidth_num)
-  top = borderline(image_file, range_top, axis)
-
-  range_bottom = (img_geo[:height]-1..img_geo[:height]-scan_bandwidth_num)
-  bottom = borderline(image_file, range_bottom, axis)
-
-  {top: top + OFFSET_LINE_NUM, bottom: bottom - OFFSET_LINE_NUM}
+  strip_detect(image_file, 'y')
 end
 
 def vertical_strip_detect(image_file)
+  strip_detect(image_file, 'x')
+end
+
+def strip_detect(image_file, axis)
   img_geo = image_file.image_geometry
-  scan_bandwidth_num = (img_geo[:width] * SCAN_BANDWIDTH_PERCENT * 0.01).to_i
-  axis = 'x'
+  line_length = (axis == 'x') ? img_geo[:width] : img_geo[:height]
+  scan_bandwidth_num = (line_length * SCAN_BANDWIDTH_PERCENT * 0.01).to_i
 
-  range_right = (1..scan_bandwidth_num)
-  right = borderline(image_file, range_right, axis)
+  range_increase = (1..scan_bandwidth_num)
+  border_1 = borderline(image_file, range_increase, axis)
 
-  range_left = (img_geo[:width]-1..img_geo[:width]-scan_bandwidth_num)
-  left = borderline(image_file, range_left, axis)
+  range_decrease = (line_length - 1..line_length - scan_bandwidth_num)
+  border_2 = borderline(image_file, range_decrease, axis)
 
-  {right: right + OFFSET_LINE_NUM, left: left - OFFSET_LINE_NUM}
+  if axis == 'x'
+    return {right: border_1 + OFFSET_LINE_NUM, left: border_2 - OFFSET_LINE_NUM}
+  elsif axis == 'y'
+    return {top: border_1 + OFFSET_LINE_NUM, bottom: border_2 - OFFSET_LINE_NUM}
+  end
 end
 
 def borderline(image_file, range, axis)
