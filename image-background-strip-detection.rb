@@ -92,7 +92,21 @@ def line_colors(image_file, line_num, axis)
   end.sort_by{ |h| h.values_at(:count) }.reverse
 end
 
+def background_detect(image_file)
+  hor_r = horizon_strip_detect(image_file)
+  ver_r = vertical_strip_detect(image_file)
+  hor_r.merge(ver_r)
+end
+
+def argv
+  unless ARGV.empty?
+    return background_detect(ARGV.first)
+  end
+end
+
 
 COLOR_NUM_THRESHOLD = 50
 OFFSET_LINE_NUM = 1
 SCAN_BANDWIDTH_PERCENT = 30
+
+p argv
