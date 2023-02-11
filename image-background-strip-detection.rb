@@ -21,6 +21,18 @@ module Imagemagick
     w, h = `identify -format "%[width],%[height]" #{self}`.split(',').map(&:to_i)
     {width: w, height: h}
   end
+
+  def crop_cmd(ct, file)
+    width = ct[:left] - ct[:right]
+    height = ct[:bottom] - ct[:top]
+    x = ct[:right]
+    y = ct[:top]
+    
+    cmd = ['convert', file, '-crop', "#{width}x#{height}+#{x}+#{y}", add_txt_filename(file, 'cropped')]
+
+    system(*cmd)
+  end
+
 end
 
 class Range
@@ -98,15 +110,21 @@ def background_detect(image_file)
   hor_r.merge(ver_r)
 end
 
-def argv
-  unless ARGV.empty?
-    return background_detect(ARGV.first)
-  end
+def add_txt_filename(file, add_txt)
+  filename = File.basename(file, '.*')
+  File.join(File.dirname(file), "#{filename}-#{add_txt}" + File.extname(file))
 end
-
 
 COLOR_NUM_THRESHOLD = 50
 OFFSET_LINE_NUM = 1
 SCAN_BANDWIDTH_PERCENT = 30
 
-p argv
+unless ARGV.empty?
+  content_area = background_detect(ARGV.first)
+  crop_cmd(content_area, 'test.jpg')
+end
+
+ARGV.each.with_index do |image, i|
+  puts("[#{i+1}/#{ARGV.size}] #{File.basename(image)}")
+  crop_cmd(background_detect(image), image)
+end
