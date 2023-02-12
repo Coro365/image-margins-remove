@@ -119,11 +119,6 @@ COLOR_NUM_THRESHOLD = 50
 OFFSET_LINE_NUM = 1
 SCAN_BANDWIDTH_PERCENT = 30
 
-unless ARGV.empty?
-  content_area = background_detect(ARGV.first)
-  crop_cmd(content_area, 'test.jpg')
-end
-
 ARGV.each.with_index do |image, i|
   puts("[#{i+1}/#{ARGV.size}] #{File.basename(image)}")
   crop_cmd(background_detect(image), image)
