@@ -1,6 +1,6 @@
 require 'test/unit'
 
-require_relative '../image-background-strip-detection.rb'
+require_relative '../image-margins-remove.rb'
 include Imagemagick
 
 class TestRubyMyCommon < Test::Unit::TestCase
@@ -22,12 +22,12 @@ class TestRubyMyCommon < Test::Unit::TestCase
   end
 
   def test_image_geometry
-    image_file = './test/67417700_p0_30p.jpg'
-    assert_equal({:width=>614, :height=>341}, image_file.image_geometry)
+    image_file = './test/5546529697_bg_500.png'
+    assert_equal({:width=>500, :height=>374}, image_file.image_geometry)
   end
 
   def test_color_num_threshold_cheack
-    image_file = './test/67417700_p0_30p.jpg'
+    image_file = './test/5546529697_bg_500.png'
     line_num = 100
     axis = 'y'
 
@@ -36,18 +36,18 @@ class TestRubyMyCommon < Test::Unit::TestCase
   end
 
   def test_horizon_strip_detect
-    image_file = './test/67417700_p0_30p.jpg'
-    assert_equal({:top=>43, :bottom=>297}, horizon_strip_detect(image_file))
+    image_file = './test/5546529697_bg_500.png'
+    assert_equal({:top=>32, :bottom=>341}, horizon_strip_detect(image_file))
   end
 
   def test_vertical_strip_detect
-    image_file = './test/Screenshot_20220611_145243_30p.png'
-    assert_equal({:right=>43, :left=>427}, vertical_strip_detect(image_file))
+    image_file = './test/8978741478_bg_500.png'
+    assert_equal({:right=>90, :left=>385}, vertical_strip_detect(image_file))
   end
 
   def test_background_detect
-    image_file = './test/67417700_p0_30p.jpg'
-    result = {:top=>43, :bottom=>297, :right=>2, :left=>612}
+    image_file = './test/5546529697_bg_500.png'
+    result = {:top=>32, :bottom=>341, :right=>2, :left=>498}
     assert_equal(result, background_detect(image_file))
   end
 end
